@@ -65,28 +65,26 @@ def about():
 #    return render_template('article.html', article=article)
 
 
-# Register Form Class
-class RegisterForm(Form):
-#    name = StringField('Name', [validators.Length(min=1, max=50)])
-#    username = StringField('Username', [validators.Length(min=4, max=25)])
-#    email = StringField('Email', [validators.Length(min=6, max=50)])
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords do not match')
-    ])
-    confirm = PasswordField('Confirm Password')
+class ChangePassword(Form):
+    password = PasswordField('New Password', [validators.InputRequired(), validators.EqualTo('confirm', message='Passwords must match')])
+    confirm  = PasswordField('Repeat Password')
 
 
 # User Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
+    form = ChangePassword(request.form)
+    if request.method == 'POST':
+        new_password = form.password.data
+        confirm = form.confirm.data
 #        name = form.name.data
 #        email = form.email.data
 #        username = form.username.data
-        password = sha512_crypt.encrypt(str(form.password.data))
-
+        if form.validators:
+            password = sha512_crypt.encrypt(str(form.password.data))
+        else:
+            error = 'As senhas não batem'
+            return render_template('register.html', error=error)
         # Create cursor
 #        cur = mysql.connection.cursor()
 
@@ -101,7 +99,8 @@ def register():
 
 #        flash('You are now registered and can log in', 'success')
 
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
+#    return render_template('register.html')
     return render_template('register.html', form=form)
 
 
@@ -132,7 +131,7 @@ def login():
 #                session['username'] = username
 
             flash('You are now logged in', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('index'))
         else:
             error = 'Invalid login'
             return render_template('login.html', error=error)
@@ -249,7 +248,6 @@ def logout():
 
         #Close connection
 #        cur.close()
-
 #        flash('Article Updated', 'success')
 
 #        return redirect(url_for('dashboard'))
