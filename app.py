@@ -1,4 +1,5 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
+from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, Response
+import subprocess
 #from data import Articles
 #from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
@@ -105,6 +106,10 @@ def webcam_video_stream():
                "'video/x-raw,width=320,height=240,framerate=30/1'"
                " ! jpegenc ! multipartmux boundary=spionisto ! "
                "filesink location=/dev/stdout")
+#    command = ("gst-launch-1.0 -v videotestsrc !"
+#               "'video/x-raw,width=320,height=240,framerate=30/1'"
+#               " ! jpegenc ! multipartmux boundary=spionisto ! "
+#               "filesink location=/dev/stdout")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=-1, shell=True)
     print("starting polling loop.")
     while(p.poll() is None):
