@@ -9,17 +9,6 @@ from functools import wraps
 app = Flask(__name__)
 
 
-# Config MySQL
-#app.config['MYSQL_HOST'] = 'localhost'
-#app.config['MYSQL_USER'] = 'root'
-#app.config['MYSQL_PASSWORD'] = '123456'
-#app.config['MYSQL_DB'] = 'myflaskapp'
-#app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-# init MYSQL
-#mysql = MySQL(app)
-
-#Articles = Articles()
-
 # Index
 @app.route('/')
 def index():
@@ -102,14 +91,14 @@ def changepass():
 
 
 def webcam_video_stream():
-    command = ("gst-launch-1.0 -v v4l2src device=/dev/video0 !"
-               "'video/x-raw,width=320,height=240,framerate=30/1'"
-               " ! jpegenc ! multipartmux boundary=spionisto ! "
-               "filesink location=/dev/stdout")
-#    command = ("gst-launch-1.0 -v videotestsrc !"
+#    command = ("gst-launch-1.0 -v v4l2src device=/dev/video0 !"
 #               "'video/x-raw,width=320,height=240,framerate=30/1'"
 #               " ! jpegenc ! multipartmux boundary=spionisto ! "
 #               "filesink location=/dev/stdout")
+    command = ("gst-launch-1.0 -v videotestsrc !"
+               "'video/x-raw,width=320,height=240,framerate=30/1'"
+               " ! jpegenc ! multipartmux boundary=spionisto ! "
+               "filesink location=/dev/stdout")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=-1, shell=True)
     print("starting polling loop.")
     while(p.poll() is None):
@@ -123,9 +112,13 @@ def videofeed():
                     mimetype='multipart/x-mixed-replace; boundary=--spionisto')
 
 #Dashboard
-@app.route('/dashboard')
+@app.route('/dashboard', methods = ["GET", "POST"])
 @is_logged_in
 def dashboard():
+
+    if request.method == 'POST':
+        btn = request.form['a']
+        print(btn)
     return render_template('dashboard.html')
 
 
