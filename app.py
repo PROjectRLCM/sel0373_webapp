@@ -7,18 +7,21 @@ from passlib.hash import sha512_crypt
 from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = b'dGKF0g/vb%lQ>G4/{;myE4li)nhf=e'
 
 
-# Config MySQL
-#app.config['MYSQL_HOST'] = 'localhost'
-#app.config['MYSQL_USER'] = 'root'
-#app.config['MYSQL_PASSWORD'] = '123456'
-#app.config['MYSQL_DB'] = 'myflaskapp'
-#app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-# init MYSQL
-#mysql = MySQL(app)
 
-#Articles = Articles()
+
+
+command = ("gst-launch-1.0 -v v4l2src device=/dev/video0 !"
+            "'video/x-raw,width=320,height=240,framerate=30/1'"
+            " ! jpegenc ! multipartmux boundary=spionisto ! "
+            "filesink location=/dev/stdout")
+p = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=-1, shell=True)
+print("starting polling loop.")
+
+
+
 
 # Index
 @app.route('/')
@@ -101,17 +104,9 @@ def changepass():
 
 
 
+
+
 def webcam_video_stream():
-    command = ("gst-launch-1.0 -v v4l2src device=/dev/video0 !"
-               "'video/x-raw,width=320,height=240,framerate=30/1'"
-               " ! jpegenc ! multipartmux boundary=spionisto ! "
-               "filesink location=/dev/stdout")
-#    command = ("gst-launch-1.0 -v videotestsrc !"
-#               "'video/x-raw,width=320,height=240,framerate=30/1'"
-#               " ! jpegenc ! multipartmux boundary=spionisto ! "
-#               "filesink location=/dev/stdout")
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=-1, shell=True)
-    print("starting polling loop.")
     while(p.poll() is None):
         yield p.stdout.read(1024)
 
@@ -137,6 +132,10 @@ def not_found(e):
 def forbidden(e):
     return render_template('403.html'), 403
 
+
+
+#from waitress import serve
 if __name__ == '__main__':
-    app.secret_key='secret123'
-    app.run(debug=True)
+#    app.secret_key='secret123'
+#    serve(app, host='0.0.0.0', port=8080)
+    app.run(debug=False, port=5000)
