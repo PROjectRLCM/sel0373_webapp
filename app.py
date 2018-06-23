@@ -5,6 +5,8 @@ import subprocess
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha512_crypt
 from functools import wraps
+import os
+
 
 app = Flask(__name__)
 app.secret_key = b'dGKF0g/vb%lQ>G4/{;myE4li)nhf=e'
@@ -19,6 +21,7 @@ command = ("gst-launch-1.0 -v v4l2src device=/dev/video0 !"
             "filesink location=/dev/stdout")
 p = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=-1, shell=True)
 print("starting polling loop.")
+
 
 
 
@@ -118,9 +121,14 @@ def videofeed():
                     mimetype='multipart/x-mixed-replace; boundary=--spionisto')
 
 #Dashboard
-@app.route('/dashboard')
+@app.route('/dashboard', methods = ["GET", "POST"])
 @is_logged_in
 def dashboard():
+
+    if request.method == 'POST':
+        btn = request.form['a']
+        os.system("irsend send_once " + btn)
+        print("irsend send_once " + btn)
     return render_template('dashboard.html')
 
 
@@ -134,8 +142,8 @@ def forbidden(e):
 
 
 
-#from waitress import serve
+from waitress import serve
 if __name__ == '__main__':
 #    app.secret_key='secret123'
-#    serve(app, host='0.0.0.0', port=8080)
-    app.run(debug=False, port=5000)
+    serve(app, host='127.0.0.1', port=8000)
+#    app.run(debug=False, port=5000)

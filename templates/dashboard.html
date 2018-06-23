@@ -2,5 +2,31 @@
 
 {% block body %}
   <h1>Dashboard</h1>
-  <center><img src="/videofeed"/></center>
+
+  <center>
+    <img src="/videofeed"/>
+
+    <form action="" method="POST">
+      <p><b> projetor </b></p>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" name="a" value="epson_projetor151506800 KEY_POWER">Ligar</button>
+          <button type="submit" class="btn btn-primary" name="a" value="epson_projetor151506800 KEY_SEARCH">Search</button>
+          <button type="submit" class="btn btn-primary" name="a" value="epson_projetor151506800 KEY_COMPUTER">VGA</button>
+          <button type="submit" class="btn btn-primary" name="a" value="epson_projetor151506800 KEY_VIDEO">Video</button>
+          <button type="submit" class="btn btn-primary" name="a" value="epson_projetor151506800 KEY_VCR">AV</button>
+        </div>
+      
+      
+      <p><b> arduino </b></p>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" name="a" value="arduino_custom KEY_1">Ação 1</button>
+          <button type="submit" class="btn btn-primary" name="a" value="arduino_custom KEY_2">Ação 2</button>
+          <button type="submit" class="btn btn-primary" name="a" value="arduino_custom KEY_3">Ação 3</button>
+          <button type="submit" class="btn btn-primary" name="a" value="arduino_custom KEY_4">Ação 4</button>
+          <button type="submit" class="btn btn-primary" name="a" value="arduino_custom KEY_5">Ação 5</button>
+        </div>
+      
+    </form>
+  </center>
+
 {% endblock %}
